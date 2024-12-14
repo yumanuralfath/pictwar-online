@@ -1,9 +1,8 @@
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate rocket;
 
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, World!"
-}
+mod routes;
+use routes::home::index;
 
 #[launch]
 fn rocket() -> _ {

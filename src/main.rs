@@ -4,6 +4,7 @@ extern crate rocket;
 mod models;
 mod routes;
 mod schema;
+mod services;
 mod utils;
 
 use crate::routes::routes::index;

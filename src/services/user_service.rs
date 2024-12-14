@@ -12,12 +12,12 @@ impl<'a> UserService<'a> {
         UserService { pool }
     }
 
-    pub fn get_users(&self) -> Vec<User> {
+    pub(crate) fn get_users(&self) -> Vec<User> {
         let mut conn = self.pool.get().expect("Failed to get DB connection");
         users.load::<User>(&mut conn).expect("Error loading users")
     }
 
-    pub fn get_user(&self, user_id: i32) -> User {
+    pub(crate) fn get_user(&self, user_id: i32) -> User {
         let mut conn = self.pool.get().expect("Failed to get DB connection");
         users
             .find(user_id)
@@ -25,7 +25,7 @@ impl<'a> UserService<'a> {
             .expect("Error loading user")
     }
 
-    pub fn create_user(&self, new_user: NewUser) -> User {
+    pub(crate) fn create_user(&self, new_user: NewUser) -> User {
         let mut conn = self.pool.get().expect("Failed to get DB connection");
         diesel::insert_into(users)
             .values(new_user)

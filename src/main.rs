@@ -6,6 +6,7 @@ mod models;
 mod routes;
 mod schema;
 mod services;
+mod tests;
 mod utils;
 
 use crate::routes::get_routes;

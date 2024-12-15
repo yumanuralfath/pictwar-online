@@ -1,10 +1,20 @@
-FROM rust:nightly AS builder
+FROM lukemathwalker/cargo-chef:latest-rust-1 AS chef
 
+# Create and change to the app directory.
 WORKDIR /app
 
-COPY . /app/.
+FROM chef AS planner
+COPY . ./
+RUN cargo chef prepare --recipe-path recipe.json
 
-RUN --mount=type=cache,id=cache-cargo-git,target=/root/.cargo/git \
-    --mount=type=cache,id=cache-cargo-registry,target=/root/.cargo/registry \
-    --mount=type=cache,id=cache-cargo-target,target=/app/target \
-    cargo build --release --target x86_64-unknown-linux-musl
+FROM chef AS builder 
+COPY --from=planner /app/recipe.json recipe.json
+
+# Build dependencies - this is the caching Docker layer!
+RUN cargo chef cook --release --recipe-path recipe.json
+
+# Build application
+COPY . ./
+RUN cargo build --release
+
+CMD ["./target/release/helloworld"]

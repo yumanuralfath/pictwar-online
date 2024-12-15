@@ -1,6 +1,7 @@
 use crate::controllers::user_controller::UserController;
 use crate::models::users::{NewUser, User};
 use crate::utils::db::DbPool;
+use rocket::http::Status;
 use rocket::serde::json::Json;
 use rocket::State;
 
@@ -19,8 +20,8 @@ pub async fn get_user(user_id: i32, pool: &State<DbPool>) -> Json<User> {
 }
 
 #[post("/users", data = "<user>")]
-pub async fn create_user(user: Json<NewUser>, pool: &State<DbPool>) -> Json<User> {
+pub async fn create_user(user: Json<NewUser>, pool: &State<DbPool>) -> (Status, Json<User>) {
     let user_controller = UserController::new(pool.inner());
     let new_user = user_controller.create_new_user(user.into_inner());
-    Json(new_user)
+    (Status::Created, Json(new_user))
 }
